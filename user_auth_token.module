@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * Module file for user_auth_token.
+ */
+
+/**
+ * Function to generate auth_token itself.
+ */
+function generate_auth_token() {
+  $config = \Drupal::config('user_auth_token.settings');
+  $auth_token_length = $config->get('auth_token_length');
+  return substr(sha1(time()), 0, $auth_token_length);
+}

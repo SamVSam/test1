@@ -1,0 +1,43 @@
+<?php
+
+/**
+ * @file
+ * Install file for user_auth_token.
+ */
+
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
+
+/**
+ * Implements hook_install().
+ */
+function user_auth_token_install() {
+
+// TODO
+// - batch to fill in the field_auth_token for existent users;
+//   use generate_auth_token();
+
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function user_auth_token_uninstall() {
+
+  $field_storage_config = FieldStorageConfig::loadByName('user', 'field_auth_token');
+  if ($field_storage_config) {
+    $field_storage_config->delete();
+  }
+  else {
+    // The field can not be loaded or maybe it does not exists.
+  }
+
+  $field_config = FieldConfig::loadByName('user', 'user', 'field_auth_token');
+  if ($field_config) {
+    $field_config->delete();
+  }
+  else {
+    // The field can not be loaded or maybe it does not exists.
+  }
+
+}
