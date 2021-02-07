@@ -22,7 +22,6 @@ function get_auth_token_length() {
  * Function to generate auth_token itself.
  */
 function _generate_auth_token() {
-  //return substr(sha1(microtime()), 0, AUTH_TOKEN_LENGTH);
   return substr(bin2hex(random_bytes(AUTH_TOKEN_LENGTH)), 0, AUTH_TOKEN_LENGTH);
 }
 
@@ -43,8 +42,8 @@ function user_auth_token_entity_presave(Drupal\Core\Entity\EntityInterface $enti
         $entity->field_auth_token->setValue($entity->original->field_auth_token->value);
       }
       else {
-        // Users exist, but no original value.
-        // Seems like module's first run.
+        // Users exist, but no original value for field_auth_token.
+        // Seems like module's first updb run.
       }
     }
 

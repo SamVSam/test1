@@ -14,8 +14,8 @@ use Drupal\user\Entity\User;
  */
 function user_auth_token_install() {
   // Force reset module schema version to initial value.
-  // Maybe we don't need this,
-  //   because MODULENAME_update_8000() will be run by any means on any first updb.
+  // Probably we don't need this, as MODULENAME_update_8000()
+  //   will be run by any means on first 'updb'.
   //drupal_set_installed_schema_version('user_auth_token', 8000);
 }
 
