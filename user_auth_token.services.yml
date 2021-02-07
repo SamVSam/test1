@@ -1,0 +1,5 @@
+services:
+  user_auth_token_subscriber:
+    class: Drupal\user_auth_token\EventSubscriber\UserAuthTokenSubscriber
+    tags:
+      - {name: event_subscriber}

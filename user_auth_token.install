@@ -1,0 +1,88 @@
+<?php
+
+/**
+ * @file
+ * Install file for user_auth_token.
+ */
+
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\user\Entity\User;
+
+/**
+ * Implements hook_install().
+ */
+function user_auth_token_install() {
+  drupal_set_installed_schema_version('user_auth_token', 8000);
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function user_auth_token_uninstall() {
+  $field_storage_config = FieldStorageConfig::loadByName('user', 'field_auth_token');
+  if ($field_storage_config) {
+    $field_storage_config->delete();
+  }
+  else {
+    // The field can not be loaded or maybe it does not exists.
+  }
+
+  $field_config = FieldConfig::loadByName('user', 'user', 'field_auth_token');
+  if ($field_config) {
+    $field_config->delete();
+  }
+  else {
+    // The field can not be loaded or maybe it does not exists.
+  }
+
+  \Drupal::keyValue('system.schema')->delete('user_auth_token');
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function user_auth_token_update_8001(&$sandbox) {
+
+  $db_connection = \Drupal::database();
+
+  if (!isset($sandbox['progress'])) {
+    $sandbox['progress'] = 0;
+    $sandbox['max'] = $db_connection->query('SELECT COUNT(uid) FROM {users}')->fetchField();
+    $sandbox['messages'] = [];
+    $sandbox['current_item'] = -1;
+  }
+
+  $limit = 10;
+
+  $query = $db_connection->select('users', 'u');
+  $query->fields('u', ['uid']);
+  $result = $query
+    ->where('u.uid > :uid', [':uid' => $sandbox['current_item']])
+    ->range(0, $limit)
+    ->orderBy('u.uid', 'ASC')
+    ->execute();
+
+  foreach ($result as $row) {
+    $auth_token = _generate_auth_token();
+    if ($row->uid == 0) {
+      $auth_token = '0';
+    }
+
+    $user = User::load($row->uid);
+    $user->field_auth_token->setValue($auth_token);
+    $user->save();
+
+    $sandbox['progress']++;
+    $sandbox['current_item'] = $row->uid;
+  }
+
+  $sandbox['#finished'] = ($sandbox['progress'] >= $sandbox['max']) ? TRUE : ($sandbox['progress'] / $sandbox['max']);
+
+  if ($sandbox['#finished']) {
+    return t('Update complete');
+  }
+
+}
+
+// EOF
