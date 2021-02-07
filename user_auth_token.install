@@ -79,16 +79,8 @@ function user_auth_token_update_8001(&$sandbox) {
 
   $sandbox['#finished'] = ($sandbox['progress'] >= $sandbox['max']) ? TRUE : ($sandbox['progress'] / $sandbox['max']);
 
-  $sandbox_status = $sandbox;
-  unset($sandbox_status['messages']);
-  $sandbox['messages'][] = t('$sandbox=') . print_r($sandbox_status, TRUE);
-
   if ($sandbox['#finished']) {
-    $final_message = '<pre>' . print_r(implode('<br>', $sandbox['messages']), 1) . '</pre>';
-    return t(
-      'Update complete, final messages: @message',
-      ['@message' => $final_message]
-    );
+    return t('Update complete');
   }
 
 }
