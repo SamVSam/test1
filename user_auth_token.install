@@ -13,10 +13,7 @@ use Drupal\user\Entity\User;
  * Implements hook_install().
  */
 function user_auth_token_install() {
-  // Force reset module schema version to initial value.
-  // Probably we don't need this, as MODULENAME_update_8000()
-  //   will be run by any means on first 'updb'.
-  //drupal_set_installed_schema_version('user_auth_token', 8000);
+  drupal_set_installed_schema_version('user_auth_token', 8000);
 }
 
 /**
@@ -45,7 +42,7 @@ function user_auth_token_uninstall() {
 /**
  * Implements hook_update_N().
  */
-function user_auth_token_update_8000(&$sandbox) {
+function user_auth_token_update_8001(&$sandbox) {
 
   $db_connection = \Drupal::database();
 
@@ -87,7 +84,7 @@ function user_auth_token_update_8000(&$sandbox) {
   $sandbox['messages'][] = t('$sandbox=') . print_r($sandbox_status, TRUE);
 
   if ($sandbox['#finished']) {
-    $final_message = '<ul><li>' . implode('</li><li>', $sandbox['messages']) . "</li></ul>";
+    $final_message = '<pre>' . print_r(implode('<br>', $sandbox['messages']), 1) . '</pre>';
     return t(
       'Update complete, final messages: @message',
       ['@message' => $final_message]
