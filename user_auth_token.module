@@ -5,11 +5,20 @@
  * Module file for user_auth_token.
  */
 
+define('AUTH_TOKEN_LENGTH', get_auth_token_length());
+
+/**
+ * Function to get auth_token_length.
+ */
+function get_auth_token_length() {
+  $config = \Drupal::config('user_auth_token.settings');
+  return $config->get('auth_token_length');
+}
+
 /**
  * Function to generate auth_token itself.
  */
 function generate_auth_token() {
-  $config = \Drupal::config('user_auth_token.settings');
-  $auth_token_length = $config->get('auth_token_length');
-  return substr(sha1(time()), 0, $auth_token_length);
+  //return substr(sha1(microtime()), 0, AUTH_TOKEN_LENGTH);
+  return substr(bin2hex(random_bytes(AUTH_TOKEN_LENGTH)), 0, AUTH_TOKEN_LENGTH);
 }

@@ -36,6 +36,13 @@ class UserAuthTokenSubscriber implements EventSubscriberInterface {
 // TODO
 // - query field for token
 // - make autologin
+//     $db_connection->query('
+//        SELECT uid
+//        FROM {user__field_auth_token}
+//        WHERE field_auth_token_value = @_1
+//     ', ['@_1' => $auth_token])
+//     ->fetchField();
+// ^^^^ MAKE IT FIELD QUERY ^^^^^^^^^^^^^^^
 //     $user = User::load($uid);
 //     user_login_finalize($user);
 
