@@ -5,6 +5,9 @@
  * Module file for user_auth_token.
  */
 
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+
 define('AUTH_TOKEN_LENGTH', get_auth_token_length());
 
 /**
@@ -18,7 +21,49 @@ function get_auth_token_length() {
 /**
  * Function to generate auth_token itself.
  */
-function generate_auth_token() {
+function _generate_auth_token() {
   //return substr(sha1(microtime()), 0, AUTH_TOKEN_LENGTH);
   return substr(bin2hex(random_bytes(AUTH_TOKEN_LENGTH)), 0, AUTH_TOKEN_LENGTH);
 }
+
+/**
+ * Implements hook_entity_presave().
+ */
+function user_auth_token_entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
+  if ($entity->getEntityTypeId() == 'user' && $entity->bundle() == 'user') {
+
+    // New token generated at entity-creation moment.
+    if ($entity->isNew() && !isset($entity->original)) {
+      $entity->field_auth_token->setValue(_generate_auth_token());
+    }
+
+    // Token generated at entity-creation moment should be preserved on update.
+    if (!$entity->isNew() && isset($entity->original)) {
+      if (isset($entity->original->field_auth_token->value)) {
+        $entity->field_auth_token->setValue($entity->original->field_auth_token->value);
+      }
+      else {
+        // Users exist, but no original value.
+        // Seems like module's first run.
+      }
+    }
+
+    if (
+      (!$entity->isNew() && !isset($entity->original))
+    ||
+      ( $entity->isNew() &&  isset($entity->original))
+    ) {
+      // We better brutally show this, as it's very unlikely to happen.
+      die("Weird scenario here, ideally it shouldn't have happened.");
+    }
+
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function user_auth_token_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+}
+
+// EOF

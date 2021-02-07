@@ -19,12 +19,9 @@ class UserAuthTokenSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * Method to check token and ahtneticate user.
+   * Method to check token and authenticate user.
    */
   public function checkAuth($event) {
-
-    //$event->getRequest()->getQueryString();
-    //$event->getRequest()->getRequestUri();
 
     $request = \Drupal::request();
 
@@ -33,8 +30,11 @@ class UserAuthTokenSubscriber implements EventSubscriberInterface {
 
     if ($auth_token != '' && $auth_token == 'qwe123') {
 
+
+
 // TODO
 // - query field for token
+// - handle user/0
 // - make autologin
 //     $db_connection->query('
 //        SELECT uid
@@ -45,6 +45,11 @@ class UserAuthTokenSubscriber implements EventSubscriberInterface {
 // ^^^^ MAKE IT FIELD QUERY ^^^^^^^^^^^^^^^
 //     $user = User::load($uid);
 //     user_login_finalize($user);
+//
+// - Find how to solve existing destination:
+//     local.dept/user/69/edit?destination=/admin/people
+
+
 
       $destination = trim(str_replace($request->getQueryString(), '', $request->getRequestUri()), '?');
       $response = new RedirectResponse($destination);
@@ -57,3 +62,5 @@ class UserAuthTokenSubscriber implements EventSubscriberInterface {
   }
 
 }
+
+// EOF

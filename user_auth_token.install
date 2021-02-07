@@ -67,7 +67,11 @@ function user_auth_token_update_8000(&$sandbox) {
     ->execute();
 
   foreach ($result as $row) {
-    $auth_token = generate_auth_token();
+    $auth_token = _generate_auth_token();
+    if ($row->uid == 0) {
+      $auth_token = '0';
+    }
+
     $user = User::load($row->uid);
     $user->field_auth_token->setValue($auth_token);
     $user->save();
@@ -91,3 +95,5 @@ function user_auth_token_update_8000(&$sandbox) {
   }
 
 }
+
+// EOF
