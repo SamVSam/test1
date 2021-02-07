@@ -19,7 +19,7 @@ class UserAuthTokenSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * Method to check token and authenticate user.
+   * Method to automatically authenticate user if token exist.
    */
   public function checkAuth($event) {
 
