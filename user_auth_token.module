@@ -31,12 +31,12 @@ function _generate_auth_token() {
 function user_auth_token_entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
   if ($entity->getEntityTypeId() == 'user' && $entity->bundle() == 'user') {
 
-    // New token generated at entity-creation moment.
+    // New token generated at entity creation moment.
     if ($entity->isNew() && !isset($entity->original)) {
       $entity->field_auth_token->setValue(_generate_auth_token());
     }
 
-    // Token generated at entity-creation moment should be preserved on update.
+    // Token generated at entity creation moment should be preserved on entity update.
     if (!$entity->isNew() && isset($entity->original)) {
       if (isset($entity->original->field_auth_token->value)) {
         $entity->field_auth_token->setValue($entity->original->field_auth_token->value);
@@ -57,12 +57,6 @@ function user_auth_token_entity_presave(Drupal\Core\Entity\EntityInterface $enti
     }
 
   }
-}
-
-/**
- * Implements hook_form_alter().
- */
-function user_auth_token_form_alter(&$form, FormStateInterface $form_state, $form_id) {
 }
 
 // EOF

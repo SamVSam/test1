@@ -41,6 +41,8 @@ function user_auth_token_uninstall() {
 
 /**
  * Implements hook_update_N().
+ *
+ * Generating auth_tokens for existing users.
  */
 function user_auth_token_update_8001(&$sandbox) {
 
